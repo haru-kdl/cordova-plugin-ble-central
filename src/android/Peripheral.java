@@ -149,6 +149,12 @@ public class Peripheral extends BluetoothGattCallback {
             json.put("id", device.getAddress()); // mac address
             if (advertisingData != null) {
                 json.put("advertising", byteArrayToJSON(advertisingData));
+                /* !!! Debug byteArray to string */
+                //LOG.d(TAG, Arrays.toString(advertisingData));
+                /* !!! advertising.data add BASE64 encode */
+                json.put("advertisingData", Base64.encodeToString(advertisingData, Base64.NO_WRAP));
+                /* !!! advertising.data add byte to HEX string */
+                json.put("advertisingHex", byteToHexString(advertisingData));
             }
             // TODO real RSSI if we have it, else
             if (advertisingRSSI != FAKE_PERIPHERAL_RSSI) {
@@ -159,6 +165,15 @@ public class Peripheral extends BluetoothGattCallback {
         }
 
         return json;
+    }
+    
+    /* !!! convert byteArray to HEX String */
+    public String byteToHexString(byte[] src) {
+      StringBuilder buf = new StringBuilder(2 * src.length);
+      for(byte b : src) {
+        buf.append(String.format("%02x", b & 0xff));
+      }
+      return buf.toString();
     }
 
     public JSONObject asJSONObject(String errorMessage)  {
